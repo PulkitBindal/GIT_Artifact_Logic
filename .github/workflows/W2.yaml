@@ -36,13 +36,17 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { data: workflows } = await github.actions.listRepoWorkflows({ owner: context.repo.owner, repo: context.repo.repo });
-            const workflow = workflows.find(w => w.path === '.github/workflows/W1.yaml');
-            await github.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: workflow.id,
-            });
+            try {
+              const { data: workflows } = await github.actions.listRepoWorkflows({ owner: context.repo.owner, repo: context.repo.repo });
+              const workflow = workflows.find(w => w.path === '.github/workflows/W1.yaml');
+              await github.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: workflow.id,
+              });
+            } catch (error) {
+              console.error('Error finding workflow:', error);
+            }
       - name: Download artifact
         id: download-artifact
         uses: dawidd6/action-download-artifact@v3
