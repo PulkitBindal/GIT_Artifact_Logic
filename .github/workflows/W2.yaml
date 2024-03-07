@@ -16,14 +16,20 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const artifacts = await github.actions.listWorkflowRunArtifacts({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.payload.workflow_run.id
-            });
-            const artifactExists = artifacts.artifacts.some(artifact => artifact.name === 'W1_artifact');
-            console.log('Artifact exists:', artifactExists);
-            return artifactExists;
+            try {
+              const response = await github.actions.listWorkflowRunArtifacts({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: context.payload.workflow_run.id
+              });
+              console.log('Response:', response);
+              const artifactExists = response.artifacts.some(artifact => artifact.name === 'W1_artifact');
+              console.log('Artifact exists:', artifactExists);
+              return artifactExists;
+            } catch (error) {
+              console.error('Error fetching artifacts:', error);
+              return false;
+            }
       - name: Run W1.yaml if artifact does not exist
         if: steps.check_artifact.outputs.artifactExists == 'false'
         uses: actions/github-script@v4
