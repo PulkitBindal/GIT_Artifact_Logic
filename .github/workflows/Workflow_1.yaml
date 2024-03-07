@@ -1,0 +1,24 @@
+name: Workflow_1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature
+jobs:
+  create-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Set Environment Variables
+        run: |
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          echo "filename=steven-$git_hash.txt" >> $GITHUB_ENV
+      - name: Create Steven.txt
+        run: echo "This is test file for Steven" > ${{ env.filename }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.filename }}
+          path: ${{ env.filename }}
