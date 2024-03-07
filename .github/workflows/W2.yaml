@@ -38,6 +38,7 @@ jobs:
           script: |
             try {
               const { data: workflows } = await github.actions.listRepoWorkflows({ owner: context.repo.owner, repo: context.repo.repo });
+              console.log('Workflows type:', typeof workflows);
               console.log('Workflows:', workflows);
               const workflow = workflows.find(w => w.path === '.github/workflows/W1.yaml');
               console.log('Workflow:', workflow);
