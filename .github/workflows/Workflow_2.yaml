@@ -33,7 +33,7 @@ jobs:
         
       - name: Printing Results - Negative
         if: "${{ steps.check.outputs.exists == 'false' }}"
-        run: echo "Artifact didn`t exist."
+        run: echo "Artifact did not exist."
         
       - name: Triggering Workflow_1 and Fetching Details
         id: art
