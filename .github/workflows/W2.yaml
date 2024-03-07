@@ -31,19 +31,25 @@ jobs:
               return false;
             }
       - name: Run W1.yaml if artifact does not exist
-        if: ${{steps.check_artifact.outputs.artifactExists}} == 'false'
+        if: steps.check_artifact.outputs.artifactExists == 'false'
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             try {
               const { data: workflows } = await github.actions.listRepoWorkflows({ owner: context.repo.owner, repo: context.repo.repo });
+              console.log('Workflows:', workflows);
               const workflow = workflows.find(w => w.path === '.github/workflows/W1.yaml');
-              await github.actions.createWorkflowDispatch({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                workflow_id: workflow.id,
-              });
+              console.log('Workflow:', workflow);
+              if (workflow) {
+                await github.actions.createWorkflowDispatch({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: workflow.id,
+                });
+              } else {
+                console.error('Workflow not found.');
+              }
             } catch (error) {
               console.error('Error finding workflow:', error);
             }
