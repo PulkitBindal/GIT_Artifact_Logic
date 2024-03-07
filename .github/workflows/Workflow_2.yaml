@@ -53,3 +53,6 @@ jobs:
           github-token: ${{ secrets.ARTIFACTLOGIC }}
           repository: $OWNER/$NAME
           run-id: ${{ steps.art.outputs.LatestRunID}}
+
+      - name: Validating the File
+        run: ls -lrt
