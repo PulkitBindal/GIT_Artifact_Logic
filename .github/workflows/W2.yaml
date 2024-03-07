@@ -1,0 +1,42 @@
+name: W2
+
+on:
+  workflow_run:
+    workflows: ["W1"]
+    types:
+      - completed
+
+jobs:
+  check_artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if artifact exists
+        run: |
+          if [[ -f "W1_artifact/steven-${{ github.event.workflow_run.head_sha }}.txt" ]]; then
+            echo "Artifact exists."
+            exit 0
+          else
+            echo "Artifact does not exist."
+            exit 1
+          fi
+      - name: Run W1.yaml if artifact does not exist
+        if: ${{ failure() }}
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: workflows } = await github.actions.listRepoWorkflows({ owner: context.repo.owner, repo: context.repo.repo });
+            const workflow = workflows.find(w => w.path === '.github/workflows/W1.yaml');
+            await github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: workflow.id,
+            });
+      - name: Download artifact
+        if: ${{ success() }}
+        uses: actions/download-artifact@v2
+        with:
+          name: W1_artifact
+
+      - name: Validations
+        run: ls -lrt
