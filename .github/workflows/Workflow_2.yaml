@@ -24,7 +24,7 @@ jobs:
         id: check
         uses: xSAVIKx/artifact-exists-action@v0
         with:
-          name: steven
+          name: ABC
           
       - name: Printing Results - Positive
         if: "${{ steps.check.outputs.exists == 'true' }}"
