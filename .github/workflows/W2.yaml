@@ -31,7 +31,7 @@ jobs:
               return false;
             }
       - name: Run W1.yaml if artifact does not exist
-        if: steps.check_artifact.outputs.artifactExists == 'false'
+        if: ${{steps.check_artifact.outputs.artifactExists}} == 'true'
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
