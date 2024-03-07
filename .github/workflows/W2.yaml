@@ -9,6 +9,8 @@ on:
 jobs:
   check_artifact:
     runs-on: ubuntu-latest
+    outputs:
+      artifact_exists: ${{ steps.check_artifact.outputs.artifact_exists }}
     steps:
       - name: Check if artifact exists
         id: check_artifact
@@ -30,30 +32,33 @@ jobs:
               console.error('Error fetching artifacts:', error);
               return false;
             }
-      - name: Run W1.yaml if artifact does not exist
-        if: ${{steps.check_artifact.outputs.artifactExists}} == 'true'
+  run_if_no_artifact:
+    name: Run if no artifact exists
+    needs: check_artifact
+    runs-on: ubuntu-latest
+    if: ${{ needs.check_artifact.outputs.artifact_exists == 'false' }}
+    steps:
+      - name: Trigger W1.yaml workflow
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             try {
-              const { data: workflows } = await github.actions.listRepoWorkflows({ owner: context.repo.owner, repo: context.repo.repo });
-              console.log('Workflows type:', typeof workflows);
-              console.log('Workflows:', workflows);
-              const workflow = workflows.find(w => w.path === '.github/workflows/W1.yaml');
-              console.log('Workflow:', workflow);
-              if (workflow) {
-                await github.actions.createWorkflowDispatch({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  workflow_id: workflow.id,
-                });
-              } else {
-                console.error('Workflow not found.');
-              }
+              const response = await github.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_file: 'W1.yaml'
+              });
+              console.log('Workflow dispatch response:', response);
             } catch (error) {
-              console.error('Error finding workflow:', error);
+              console.error('Error triggering workflow:', error);
             }
+  run_for_downloading_artifact:
+    name: Run For Deownloading Artifact
+    needs: check_artifact
+    runs-on: ubuntu-latest
+    if: ${{ needs.check_artifact.outputs.artifact_exists == 'false' }}
+    steps:
       - name: Download artifact
         id: download-artifact
         uses: dawidd6/action-download-artifact@v3
