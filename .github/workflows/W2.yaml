@@ -43,8 +43,13 @@ jobs:
               repo: context.repo.repo,
               workflow_id: workflow.id,
             });
-      - name: Downlod Artifacts 
-        uses: actions/download-artifact@v3
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: W1.yaml
+          if_no_artifact_found: warn
       
       - name: List Files
         run: ls -R
