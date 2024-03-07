@@ -48,5 +48,5 @@ jobs:
         with:
           name: W1_artifact
           github-token: ${{ secrets.ARTIFACTLOGIC }}
-          repository: GIT_Artifact_Logic
+          repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
