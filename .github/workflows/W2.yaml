@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Check if artifact exists
         run: |
-          if [[ -f "steven-${{ github.event.workflow_run.head_sha }}.txt" ]]; then
+          if [[ -f "W1_artifact" ]]; then
             echo "Artifact exists."
             exit 0
           else
