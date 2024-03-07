@@ -15,12 +15,11 @@ jobs:
         run: |
           git_hash=$(git rev-parse --short "$GITHUB_SHA")
           echo "filename=steven-$git_hash.txt" >> $GITHUB_ENV
-          echo "filenamewe=steven-$git_hash" >> $GITHUB_ENV
           
       - name: Create Steven.txt
         run: echo "This is test file for Steven" > ${{ env.filename }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.filenamewe }}
+          name: steven
           path: ${{ env.filename }}
