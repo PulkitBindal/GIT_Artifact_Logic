@@ -19,15 +19,18 @@ jobs:
         run: |
           git_hash=$(git rev-parse --short "$GITHUB_SHA")
           echo "filename=steven-$git_hash.txt" >> $GITHUB_ENV
+          echo "filenamewe=steven-$git_hash" >> $GITHUB_ENV
           
       - name: Check Artifact Existence
         id: check
         uses: xSAVIKx/artifact-exists-action@v0
         with:
-          name: ${{ env.filename }}
+          name: ${{ env.filenamewe }}
+          
       - name: Printing Results - Positive
         if: "${{ steps.check.outputs.exists == 'true' }}"
         run: echo "Artifact exists."
+        
       - name: Printing Results - Negative
         if: "${{ steps.check.outputs.exists == 'false' }}"
         run: echo "Artifact didn`t exist."
