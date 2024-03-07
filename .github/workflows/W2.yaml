@@ -39,6 +39,4 @@ jobs:
             });
       - name: Download artifact
         if: steps.check_artifact.outputs.artifactExists == 'true'
-        uses: actions/download-artifact@v2
-        with:
-          name: W1_artifact
+        run: echo "Artifact exists, downloading..."
