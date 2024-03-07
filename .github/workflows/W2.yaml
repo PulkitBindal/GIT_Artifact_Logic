@@ -57,7 +57,7 @@ jobs:
     name: Run For Deownloading Artifact
     needs: check_artifact
     runs-on: ubuntu-latest
-    if: ${{ needs.check_artifact.outputs.artifact_exists == 'false' }}
+    if: ${{ needs.check_artifact.outputs.artifact_exists == 'true' }}
     steps:
       - name: Download artifact
         id: download-artifact
