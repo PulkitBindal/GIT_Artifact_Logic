@@ -1,0 +1,18 @@
+name: W1
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create file
+        run: echo "This is just test file for Steven." > steven-${{ github.sha }}.txt
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: W1_artifact
+          path: steven-${{ github.sha }}.txt
