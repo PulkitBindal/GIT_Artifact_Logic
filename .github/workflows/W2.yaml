@@ -21,7 +21,7 @@ jobs:
               repo: context.repo.repo,
               run_id: context.payload.workflow_run.id
             });
-            const artifactExists = artifacts.some(artifact => artifact.name === 'W1_artifact');
+            const artifactExists = artifacts.artifacts.some(artifact => artifact.name === 'W1_artifact');
             console.log('Artifact exists:', artifactExists);
             return artifactExists;
       - name: Run W1.yaml if artifact does not exist
