@@ -23,7 +23,7 @@ jobs:
                 run_id: context.payload.workflow_run.id
               });
               console.log('Response:', response);
-              const artifactExists = response.artifacts.some(artifact => artifact.name === 'W1_artifact');
+              const artifactExists = response.data.artifacts.some(artifact => artifact.name === 'W1_artifact');
               console.log('Artifact exists:', artifactExists);
               return artifactExists;
             } catch (error) {
@@ -36,7 +36,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const workflows = await github.actions.listRepoWorkflows({ owner: context.repo.owner, repo: context.repo.repo });
+            const { data: workflows } = await github.actions.listRepoWorkflows({ owner: context.repo.owner, repo: context.repo.repo });
             const workflow = workflows.find(w => w.path === '.github/workflows/W1.yaml');
             await github.actions.createWorkflowDispatch({
               owner: context.repo.owner,
