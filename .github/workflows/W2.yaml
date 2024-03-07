@@ -43,10 +43,8 @@ jobs:
               repo: context.repo.repo,
               workflow_id: workflow.id,
             });
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: W1_artifact
-          github-token: ${{ secrets.ARTIFACTLOGIC }}
-          repository: ${{ github.repository }}
-          run-id: ${{ github.run_id }}
+      - name: Downlod Artifacts 
+        uses: actions/download-artifact@v3
+      
+      - name: List Files
+        run: ls -R
