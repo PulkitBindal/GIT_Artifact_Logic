@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Check if artifact exists
         run: |
-          if [[ -f "W1_artifact/steven-${{ github.event.workflow_run.head_sha }}.txt" ]]; then
+          if [[ -f "steven-${{ github.event.workflow_run.head_sha }}.txt" ]]; then
             echo "Artifact exists."
             exit 0
           else
@@ -37,6 +37,3 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: W1_artifact
-
-      - name: Validations
-        run: ls -lrt
