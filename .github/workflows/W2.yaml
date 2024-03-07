@@ -11,16 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check if artifact exists
-        run: |
-          if [[ -f "W1_artifact" ]]; then
-            echo "Artifact exists."
-            exit 0
-          else
-            echo "Artifact does not exist."
-            exit 1
-          fi
+        id: check_artifact
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: artifacts } = await github.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id
+            });
+            const artifactExists = artifacts.some(artifact => artifact.name === 'W1_artifact');
+            console.log('Artifact exists:', artifactExists);
+            return artifactExists;
       - name: Run W1.yaml if artifact does not exist
-        if: ${{ failure() }}
+        if: steps.check_artifact.outputs.artifactExists == 'false'
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -33,7 +38,7 @@ jobs:
               workflow_id: workflow.id,
             });
       - name: Download artifact
-        if: ${{ success() }}
+        if: steps.check_artifact.outputs.artifactExists == 'true'
         uses: actions/download-artifact@v2
         with:
           name: W1_artifact
