@@ -33,31 +33,21 @@ jobs:
         run: |
          echo "Hooray! Artifacts found"
          
-      - name: Downloading artifact
-        uses: dawidd6/action-download-artifact@v3
-        with:
-          github_token: ${{secrets.ARTIFACTLOGIC}}
-          workflow: W1.yaml
-          name: steven
-          if_no_artifact_found: warn
-      
-      - name: List Files
-        run: ls -lrt
-
-  # job3_check_artifact_name:
-  #   if: {{ env.LatestArtifactName != 'steven'}}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Printing
-  #       run: echo "So Sad! Artifacts not found"
-
-  #     - name: Downloading artifact
-  #       uses: dawidd6/action-download-artifact@v3
-  #       with:
-  #         github_token: ${{secrets.ARTIFACTLOGIC}}
-  #         workflow: W1.yaml
-  #         name: steven
-  #         if_no_artifact_found: warn
+      # - name: Downloading artifact
+      #   uses: dawidd6/action-download-artifact@v3
+      #   with:
+      #     github_token: ${{secrets.ARTIFACTLOGIC}}
+      #     workflow: W1.yaml
+      #     name: steven
+      #     if_no_artifact_found: warn
       
       # - name: List Files
       #   run: ls -lrt
+      
+      - uses: actions/download-artifact@v4
+        with:
+          name: steven
+          github-token: ${{ secrets.ARTIFACTLOGIC }} # token with actions:read permissions on target repo
+          repository: $OWNER/$REPO
+      - name: Display structure of downloaded files
+        run: ls -R
