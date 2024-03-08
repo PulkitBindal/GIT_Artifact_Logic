@@ -28,10 +28,11 @@ jobs:
 
       - name: Printing Results
         run: |
-         echo "${{steps.check_coverage_artifact.outputs.exists}}"
+         echo "Result=${{steps.check_coverage_artifact.outputs.exists}}" >> $GITHUB_ENV
+         
   conditional_job:
     runs-on: ubuntu-latest
-    if: ${{ steps.check_coverage_artifact.outputs.exists == 'false' }}
+    if: env.Result == 'false'
     steps:
       - name: Conditional Step
         run: |
