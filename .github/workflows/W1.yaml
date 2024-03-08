@@ -1,9 +1,7 @@
 name: Create-File-and-Upload-Artifact
 
 on:
-  push:
-    branches:
-      - feature/artifact
+  workflow_call:
 
 jobs:
   create-file-and-upload-artifact:
