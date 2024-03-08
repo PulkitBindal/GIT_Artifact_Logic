@@ -38,7 +38,7 @@ jobs:
               echo "No artifacts found for the latest run of workflow $WORKFLOW"
               exists="False"
           fi
-          echo "Exists: $exists" >> $GITHUB_ENV
+          echo "Exists=$exists" >> $GITHUB_ENV
 
       - name: Printing Results
         run: |
@@ -72,7 +72,7 @@ jobs:
               echo "No artifacts found for the latest run of workflow $WORKFLOW"
               exists="False"
           fi
-          echo "Exists: $exists" >> $GITHUB_ENV
+          echo "Exists=$exists" >> $GITHUB_ENV
 
       - name: Set exists flag
         run: echo "COVERAGE_EXISTS=${{ env.exists }}" >> $GITHUB_ENV
