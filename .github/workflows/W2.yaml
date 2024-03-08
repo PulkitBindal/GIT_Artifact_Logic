@@ -25,7 +25,7 @@ jobs:
 
       - name: Check if artifact exists
         run: |
-          if echo "${{ steps.list_artifacts.outputs.artifacts }}" | jq -e '.artifacts[] | select(.name == "W1_artifact")' >/dev/null; then
+          if echo "${{ steps.list_artifacts.outputs.artifact }}" | jq -e '.artifacts[] | select(.name == "W1_artifact")' >/dev/null; then
             echo "Hooray! Artifacts found from W1"
           else
             echo "So Sad! Artifacts is not there"
