@@ -43,8 +43,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check Coverage Artifact
+        uses: xSAVIKx/artifact-exists-action@v0
         id: check_coverage_artifact
-        # Add your step to check coverage artifact here
+        with:
+          name: 'steven'
         
       - name: Set exists flag
         run: echo "COVERAGE_EXISTS=${{ steps.check_coverage_artifact.outputs.exists }}" >> $GITHUB_ENV
