@@ -1,4 +1,4 @@
-name: Create-File-and-Upload-Artifact
+name: W1
 
 on:
   workflow_call:
