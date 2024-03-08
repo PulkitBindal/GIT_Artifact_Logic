@@ -57,7 +57,7 @@ jobs:
         run: echo "Hooray! Artifact Found"
         
       - name: Checking 2
-        if: "contains(${{ steps.list_artifacts.outputs.LatestName }}, '${{ github.sha }}')"
+        if: "!contains(${{ steps.list_artifacts.outputs.LatestName }}, '${{ github.sha }}')"
         run: echo "So Sad! Artifacts not found"
 
       - name: Download artifact
@@ -70,4 +70,4 @@ jobs:
           if_no_artifact_found: warn
       
       - name: List Files
-        run: ls -R
+        run: ls -lrt
