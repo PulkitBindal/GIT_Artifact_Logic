@@ -1,4 +1,4 @@
-name: W1
+name: Create-File-and-Upload-Artifact
 
 on:
   push:
@@ -6,13 +6,15 @@ on:
       - main
 
 jobs:
-  create_artifact:
+  create-file-and-upload-artifact:
     runs-on: ubuntu-latest
     steps:
-      - name: Create file
+      - name: Create test file
         run: echo "This is just test file for Steven." > steven-${{ github.sha }}.txt
+        shell: bash
+        
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: W1_artifact
+          name: Steven-File
           path: steven-${{ github.sha }}.txt
