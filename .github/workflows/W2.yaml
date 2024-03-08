@@ -45,7 +45,7 @@ jobs:
             response=$(curl -s -H "Authorization: Bearer ${{ secrets.ARTIFACTLOGIC }}" -H "Accept: application/vnd.github.v3+json" "$API_ENDPOINT")
             
             # Check if workflow exists and has created artifacts
-            if [[ $(echo "$response" | jq -r --arg WORKFLOW_NAME "$WORKFLOW_NAME" '.workflow_runs[] | select(.name == $WORKFLOW_NAME and .artifacts_count > 0)') ]]; then
+            if [[ $(echo "$response" | jq -r --arg WORKFLOW_NAME "$WORKFLOW_NAME" '.workflow_runs[] | select(.name == 'steven' and .artifacts_count > 0)') ]]; then
                 exists="True"
             fi
             
