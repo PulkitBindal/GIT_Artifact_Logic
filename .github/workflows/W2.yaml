@@ -23,7 +23,7 @@ jobs:
             | jq -r '.workflow_runs[0].id')
           ARTIFACTS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/$OWNER/$REPO/actions/runs/$RUN_ID/artifacts")
-          echo "artifact=$ARTIFACTS" >> $GITHUB_OUTPUT
+          echo "artifact=$ARTIFACTS" >> $GITHUB_ENV
 
       - name: Check if artifact exists
         run: |
