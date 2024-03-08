@@ -32,7 +32,7 @@ jobs:
          
   conditional_job:
     runs-on: ubuntu-latest
-    if: env.Result == 'false'
+    if: steps.check_coverage_artifact.outputs.exists == 'false'
     steps:
       - name: Conditional Step
         run: |
