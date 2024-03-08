@@ -13,12 +13,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
-      # - uses: xSAVIKx/artifact-exists-action@v0
-      #   id: check_coverage_artifact
-      #   with:
-      #     name: 'steven'
-      
+
       - name: Checking Logic via Bash Script
         run: |
           OWNER="PulkitBindal"
@@ -43,22 +38,17 @@ jobs:
               echo "No artifacts found for the latest run of workflow $WORKFLOW"
               exists="False"
           fi
-          echo "Exists: $exists"
+          echo "Exists: $exists" >> $GITHUB_ENV
 
       - name: Printing Results
         run: |
-         echo "Result=${{steps.check_coverage_artifact.outputs.exists}}" >> $GITHUB_ENV
+         echo "Result=${{env.exists}}" >> $GITHUB_ENV
+         echo "$Result"
          
-
   conditional_job:
     runs-on: ubuntu-latest
     needs: normal_job
     steps:
-      # - name: Check Coverage Artifact
-      #   uses: xSAVIKx/artifact-exists-action@v0
-      #   id: check_coverage_artifact
-      #   with:
-      #     name: "steven"
       - name: Checking Logic via Bash Script
         run: |
           OWNER="PulkitBindal"
@@ -82,10 +72,10 @@ jobs:
               echo "No artifacts found for the latest run of workflow $WORKFLOW"
               exists="False"
           fi
-          echo "Exists: $exists"
+          echo "Exists: $exists" >> $GITHUB_ENV
 
       - name: Set exists flag
-        run: echo "COVERAGE_EXISTS=${{ steps.check_coverage_artifact.outputs.exists }}" >> $GITHUB_ENV
+        run: echo "COVERAGE_EXISTS=${{ env.exists }}" >> $GITHUB_ENV
         
       - name: Conditional Step
         if: ${{ env.COVERAGE_EXISTS == 'true' }}
@@ -103,16 +93,11 @@ jobs:
         with:
          time: '15s'
 
-      - name: Check Coverage Artifact
-        uses: xSAVIKx/artifact-exists-action@v0
-        with:
-          name: 'steven'
-
       - uses: actions/download-artifact@v4
         with:
           name: steven
-          github-token: ${{ secrets.ARTIFACTLOGIC }} # token with actions:read permissions on target repo
+          github-token: ${{ secrets.ARTIFACTLOGIC }} 
           repository: $OWNER/$RNAME
           
       - name: Display structure of downloaded files
-        run: ls -R
+        run: ls -lrt
