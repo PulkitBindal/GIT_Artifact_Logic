@@ -27,11 +27,19 @@ jobs:
           else
             echo "ARTIFACT_EXISTS=False" >> $GITHUB_ENV
           fi
+      - uses: xSAVIKx/artifact-exists-action@v0
+        id: check_coverage_artifact
+        with:
+          name: 'steven'
 
-      - name: Checking ARTIFACT_EXISTS
-        if: env.ARTIFACT_EXISTS == 'True'
+      - name: Printing Results
         run: |
-         echo "Hooray! Artifacts found"
+         echo "${{steps.check_coverage_artifact.outputs.exists}}"
+
+      # - name: Checking ARTIFACT_EXISTS
+      #   if: env.ARTIFACT_EXISTS == 'True'
+      #   run: |
+      #    echo "Hooray! Artifacts found"
          
       # - name: Downloading artifact
       #   uses: dawidd6/action-download-artifact@v3
