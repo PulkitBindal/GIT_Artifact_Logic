@@ -14,8 +14,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Get Latest Run and Artifact
-        id: list_artifacts
+      # - name: Get Latest Run and Artifact
+      #   id: list_artifacts
         # run: |
         #   latest_run_id=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$REPO/actions/runs | jq -r '.workflow_runs | sort_by(.created_at) | last | .id')
         #   latest_artifact_id=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$REPO/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | last | .id')
@@ -23,13 +23,13 @@ jobs:
         #   echo "LatestRunID=$latest_run_id" >> $GITHUB_ENV
         #   echo "LatestID=$latest_artifact_id" >> $GITHUB_ENV
         #   echo "LatestName=$latest_artifact_name" >> $GITHUB_ENV
-        run: |
-          latest_run_id=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$REPO/actions/runs | jq -r '.workflow_runs | sort_by(.created_at) | last | .id')
-          if: contains(env.LatestName, '${{ github.sha }}')
-            echo "REPO_EXISTS=true" >> $GITHUB_ENV
-          else
-            echo "REPO_EXISTS=false" >> $GITHUB_ENV
-          fi
+        # run: |
+        #   latest_run_id=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$REPO/actions/runs | jq -r '.workflow_runs | sort_by(.created_at) | last | .id')
+        #   if: contains(env.LatestName, '${{ github.sha }}')
+        #     echo "REPO_EXISTS=true" >> $GITHUB_ENV
+        #   else
+        #     echo "REPO_EXISTS=false" >> $GITHUB_ENV
+        #   fi
       
       # - name: Checking Postive 1
       #   run: 
@@ -44,14 +44,20 @@ jobs:
       # - name: Checking Negative 2
       #   run: 
       #     echo "So Sad! Artifacts not found"
-      
-      - name: Checking Condition 1
+
+      - name: Get Latest Run and Artifact 1
+        id: list_artifacts
+        run: |
+          latest_artifact_name=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$REPO/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | last | .name')
+          echo "LatestName=$latest_artifact_name" >> $GITHUB_ENV
+
+      - name: Get Latest Run and Artifact 2
         if: contains(env.LatestName, '${{ github.sha }}')
         run: echo "Hooray! Artifact Found"
-        
-      - name: Checking Condition 2
+
+      - name: Get Latest Run and Artifact 3
         if: (!contains(env.LatestName, '${{ github.sha }}'))
-        run:  echo "So Sad! Artifacts not found"
+        run: echo "So Sad! Artifacts not found"
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v3
