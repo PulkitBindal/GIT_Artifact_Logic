@@ -16,5 +16,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: Steven-File
+          name: steven-${{ github.sha }}
           path: steven-${{ github.sha }}.txt
