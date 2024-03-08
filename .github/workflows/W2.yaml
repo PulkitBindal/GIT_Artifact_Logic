@@ -14,15 +14,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: List workflow run artifacts
-        id: list_artifacts
+      - name: Get Latest Run and Artifact
         run: |
-          latest_run_id=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{secrets.ARTIFACTLOGIC}}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$NAME/actions/runs | jq -r '.workflow_runs[0] | sort_by(.created_at) | last | .id')
-          latest_artifact_id=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{secrets.ARTIFACTLOGIC}}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$NAME/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | last | .id')
-          latest_artifact_name=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{secrets.ARTIFACTLOGIC}}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$NAME/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | last | .name')
-          echo "LatestRunID=$latest_run_id" >> "$GITHUB_OUTPUT"
-          echo "LatestID=$latest_artifact_id" >> "$GITHUB_OUTPUT"
-          echo "LatestName=$latest_artifact_name" >> "$GITHUB_OUTPUT"
+          latest_run_id=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$REPO/actions/runs | jq -r '.workflow_runs | sort_by(.created_at) | last | .id')
+          latest_artifact_id=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$REPO/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | last | .id')
+          latest_artifact_name=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$REPO/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | last | .name')
+      
+          if [ -z "$latest_run_id" ]; then
+            echo "LatestRunID is empty"
+          else
+            echo "LatestRunID=$latest_run_id" >> "$GITHUB_ENV"
+          fi
+          
+          if [ -z "$latest_artifact_id" ]; then
+            echo "LatestArtifactID is empty"
+          else
+            echo "LatestArtifactID=$latest_artifact_id" >> "$GITHUB_ENV"
+          fi
+          
+          if [ -z "$latest_artifact_name" ]; then
+            echo "LatestArtifactName is empty"
+          else
+            echo "LatestArtifactName=$latest_artifact_name" >> "$GITHUB_ENV"
+          fi
+        shell: bash
 
       - name: Check if artifact exists
         id: check_artifact
