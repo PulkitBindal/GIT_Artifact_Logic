@@ -3,7 +3,7 @@ name: Create-File-and-Upload-Artifact
 on:
   push:
     branches:
-      - main
+      - feature/artifact
 
 jobs:
   create-file-and-upload-artifact:
