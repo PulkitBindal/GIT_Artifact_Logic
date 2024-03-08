@@ -6,7 +6,7 @@ on:
       - main
 env:
   OWNER: PulkitBindal
-  RNAME: Git_Artifact_Logic
+  RNAME: GIT_Artifact_Logic
 jobs:
   normal_job:
     runs-on: ubuntu-latest
