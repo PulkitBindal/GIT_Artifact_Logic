@@ -25,7 +25,7 @@ jobs:
           
           if [[ -z "$latest_run_url" ]] ; then
               echo "No runs found for workflow $WORKFLOW"
-              exists="False"
+              exists="false"
               exit 0
           fi
           
@@ -35,10 +35,10 @@ jobs:
           if [[ "$(echo "$artifacts_response" | jq '.total_count')" -gt 0 ]] ; then
               latest_artifact_name=$(echo "$artifacts_response" | jq -r '.artifacts[0].name')
               echo "$latest_artifact_name"
-              exists="True"
+              exists="true"
           else
               echo "No artifacts found for the latest run of workflow $WORKFLOW"
-              exists="False"
+              exists="false"
           fi
           
           echo "exists=$exists"
@@ -47,13 +47,12 @@ jobs:
         run: |
          echo "$exists"
          
-  # conditional_job:
-  #   runs-on: ubuntu-latest
-  #   needs: normal_job
-  #   steps:
-
+  conditional_job:
+    runs-on: ubuntu-latest
+    needs: normal_job
+    steps:
       - name: Conditional Step
-        if: $exists != True
+        if: ${{ $exists != true }}
         run: |
           OWNER="${{ env.OWNER }}"
           REPO="${{ env.REPO }}"
@@ -75,7 +74,7 @@ jobs:
           
           if [[ -z "$latest_run_url" ]] ; then
               echo "No runs found for workflow $WORKFLOW"
-              exists="False"
+              exists="false"
               exit 0
           fi
           
@@ -85,10 +84,10 @@ jobs:
           if [[ "$(echo "$artifacts_response" | jq '.total_count')" -gt 0 ]] ; then
               latest_artifact_name=$(echo "$artifacts_response" | jq -r '.artifacts[0].name')
               echo "$latest_artifact_name"
-              exists="True"
+              exists="true"
           else
               echo "No artifacts found for the latest run of workflow $WORKFLOW"
-              exists="False"
+              exists="false"
           fi
           
           echo "exists=$exists"
