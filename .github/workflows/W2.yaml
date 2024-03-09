@@ -48,12 +48,8 @@ jobs:
          echo "$exists"
          echo "${{ env.exists}}"
          
-  conditional_job_1:
-    runs-on: ubuntu-latest
-    if: ("${{ env.exists}}" != "True")
-    needs: normal_job
-    steps:
       - name: Conditional Step
+        if: ("${{ env.exists}}" != "True")
         run: |
           OWNER="${{ env.OWNER }}"
           REPO="${{ env.REPO }}"
