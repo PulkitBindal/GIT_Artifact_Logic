@@ -101,7 +101,7 @@ jobs:
       #     repository: $OWNER/$REPO
       
       - name: Download multiple artifacts
-        uses: marcofaggian/action-download-multiple-artifacts@v1
+        uses: marcofaggian/action-download-multiple-artifacts@v4.0.1
         with:
           names: steven
           paths: .
