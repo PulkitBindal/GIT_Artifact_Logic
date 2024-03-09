@@ -99,14 +99,21 @@ jobs:
       #     name: steven
       #     github-token: ${{ secrets.ARTIFACTLOGIC }}
       #     repository: $OWNER/$REPO
-      
-      - name: Download multiple artifacts
-        uses: marcofaggian/action-download-multiple-artifacts@v4.0.1
+      # - name: Download multiple artifacts
+      #   uses: marcofaggian/action-download-multiple-artifacts@v4.0.1
+      #   with:
+      #     names: steven
+      #     paths: .
+      #     github_token: ${{secrets.ARTIFACTLOGIC}}
+      #     workflow: W1.yaml
+          
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v3
         with:
-          names: steven
-          paths: .
+          name: steven
           github_token: ${{secrets.ARTIFACTLOGIC}}
           workflow: W1.yaml
+          if_no_artifact_found: warn
 
 
       - name: Display structure of downloaded files
