@@ -5,21 +5,21 @@ on:
     branches:
       - main
 env:
-  OWNER: PulkitBindal
-  REPO: GIT_Artifact_Logic
+  OWNER: PulkitBindal # PLEASE UPDATE
+  REPO: GIT_Artifact_Logic # PLEASE UPDATE + #PLEASE UPDATE THE TOKEN NAME
 jobs:
-  normal_job:
+  artifact_logic:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Run Bash Script
+      - name: Job 1 - Running Bash Script
         id: run_script
         run: |
           #!/bin/bash
-          OWNER="PulkitBindal"
-          REPO="GIT_Artifact_Logic"
+          OWNER="PulkitBindal" # PLEASE UPDATE
+          REPO="GIT_Artifact_Logic" # PLEASE UPDATE
           latest_run_url=$(curl -s -H "Authorization: Bearer ${{ secrets.ARTIFACTLOGIC }}" "https://api.github.com/repos/$OWNER/$REPO/actions/workflows/W1.yaml/runs?per_page=1" | jq -r '.workflow_runs[0].url')
           if [ -z "$latest_run_url" ]; then
               echo "No runs found for workflow W1.yaml"
@@ -33,34 +33,36 @@ jobs:
               echo "$latest_artifact_name"
               exists="True"
           else
-              echo "No artifacts found for the latest run of workflow W1.yaml"
+              echo "No artifacts found from the W1.yaml File"
               exists="False"
           fi
           echo "exists=$exists" >> $GITHUB_ENV
 
-      - name: Printing Results of Previous Artifact
+      - name: Job 2 - Printing Results in "exists" variable
         run: |
          echo "${{env.exists}}"
          
-      - name: Conditional Step
-        if: ${{ env.exists != 'True' }}
+      - name: Job 3 - Triggering this only if Artifact Not Found, to create another one.
+        if: ${{ env.exists != 'True' }} # MEANING -> ARTIFACT FOUND, PLEASE GO AHEAD.
         run: |
           OWNER="${{ env.OWNER }}"
           REPO="${{ env.REPO }}"
           curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.ARTIFACTLOGIC }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$REPO/actions/workflows/W1.yaml/dispatches -d '{"ref":"main"}'
           
-      - name: Hold
+      - name: Job 4 - Holding the Job for 20 seconds
         uses: jakejarvis/wait-action@master
         with:
          time: '20s'
 
-      - name: Download artifact
+      - name: Job 5 - Downloading the artifact for this workflow
         uses: dawidd6/action-download-artifact@v3
         with:
-          name: steven
-          github_token: ${{secrets.ARTIFACTLOGIC}}
-          workflow: W1.yaml
+          name: steven # PLEASE UPDATE WITH THE NAME YPU WANT
+          github_token: ${{secrets.ARTIFACTLOGIC}} #PLEASE UPDATE THE TOKEN NAME
+          check_artifacts: false
+          search_artifacts: false
+          workflow: W1.yaml #PLEASE UPDATE THE WORKFLOW FILE NAME
           if_no_artifact_found: warn
 
-      - name: Display structure of downloaded files
-        run: ls -lrt
+      - name: Job 6 - Displaying and Validating the Tree
+        run: ls -lrt # PLEASE UPDATE AS PER YOUR REQUIREMENTS
