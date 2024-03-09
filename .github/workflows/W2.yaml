@@ -48,6 +48,7 @@ jobs:
         run: |
          echo "Result=${{env.exists}}" >> $GITHUB_ENV
          echo "$Result"
+         echo "$exists"
          
   # conditional_job:
   #   runs-on: ubuntu-latest
