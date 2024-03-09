@@ -14,31 +14,34 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Checking Logic via Bash Script
+      - name: Run Bash Script
         run: |
+          #!/bin/bash
           OWNER="PulkitBindal"
           REPO="GIT_Artifact_Logic"
           WORKFLOW="W1.yaml"
-          latest_run_url=$(curl -s -H "Authorization: Bearer ${{ secrets.ARTIFACTLOGIC }}" "https://api.github.com/repos/$OWNER/$REPO/actions/workflows/$WORKFLOW/runs?per_page=1" | jq -r '.workflow_runs[0].url')
+          
+          latest_run_url=$(curl -s -H "Authorization: token ${{secrets.ARTIFACTLOGIC}}" "https://api.github.com/repos/$OWNER/$REPO/actions/workflows/$WORKFLOW/runs?per_page=1" | jq -r '.workflow_runs[0].url')
           
           if [ -z "$latest_run_url" ]; then
               echo "No runs found for workflow $WORKFLOW"
               exists="False"
               exit 0
           fi
-          # Get the artifacts for the latest run
+          
           artifacts_url="${latest_run_url}/artifacts"
           artifacts_response=$(curl -s -H "Authorization: token $TOKEN" "$artifacts_url")
+          
           if [ "$(echo "$artifacts_response" | jq '.total_count')" -gt 0 ]; then
-              # Get the name of the latest artifact
               latest_artifact_name=$(echo "$artifacts_response" | jq -r '.artifacts[0].name')
-              echo "Latest artifact: $latest_artifact_name"
+              echo "$latest_artifact_name"
               exists="True"
           else
               echo "No artifacts found for the latest run of workflow $WORKFLOW"
               exists="False"
           fi
-          echo "Exists=$exists" >> $GITHUB_ENV
+          
+          echo "exists=$exists" >> $GITHUB_ENV
 
       - name: Printing Results
         run: |
@@ -49,41 +52,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: normal_job
     steps:
-      - name: Checking Logic via Bash Script
-        run: |
-          OWNER="PulkitBindal"
-          REPO="GIT_Artifact_Logic"
-          WORKFLOW="W1.yaml"
-          latest_run_url=$(curl -s -H "Authorization: Bearer ${{ secrets.ARTIFACTLOGIC }}" "https://api.github.com/repos/$OWNER/$REPO/actions/workflows/$WORKFLOW/runs?per_page=1" | jq -r '.workflow_runs[0].url')
-          if [ -z "$latest_run_url" ]; then
-              echo "No runs found for workflow $WORKFLOW"
-              exists="False"
-              exit 0
-          fi
-          # Get the artifacts for the latest run
-          artifacts_url="${latest_run_url}/artifacts"
-          artifacts_response=$(curl -s -H "Authorization: token $TOKEN" "$artifacts_url")
-          if [ "$(echo "$artifacts_response" | jq '.total_count')" -gt 0 ]; then
-              # Get the name of the latest artifact
-              latest_artifact_name=$(echo "$artifacts_response" | jq -r '.artifacts[0].name')
-              echo "Latest artifact: $latest_artifact_name"
-              exists="True"
-          else
-              echo "No artifacts found for the latest run of workflow $WORKFLOW"
-              exists="False"
-          fi
-          echo "Exists=$exists" >> $GITHUB_ENV
 
-      - name: Set exists flag
-        run: echo "COVERAGE_EXISTS=${{ env.exists }}" >> $GITHUB_ENV
-        
       - name: Conditional Step
-        if: ${{ env.COVERAGE_EXISTS == 'true' }}
-        run: echo "This job runs because 'exists' is True"
-
-      - name: Workflow Triggering... If False
-        if: ${{ env.COVERAGE_EXISTS != 'true' }}
+        if: ${{ env.exists != 'True' }}
         run: |
+          echo "exists=$exists"
           OWNER="${{ env.OWNER }}"
           RNAME="${{ env.RNAME }}"
           curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.ARTIFACTLOGIC }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$OWNER/$RNAME/actions/workflows/W1.yaml/dispatches -d '{"ref":"main"}'
