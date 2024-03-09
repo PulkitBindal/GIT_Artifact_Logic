@@ -50,7 +50,7 @@ jobs:
          
   conditional_job_1:
     runs-on: ubuntu-latest
-    if: ${{ env.exists != 'True' }}
+    if: ("${{ env.exists}}" != "True")
     needs: normal_job
     steps:
       - name: Conditional Step
